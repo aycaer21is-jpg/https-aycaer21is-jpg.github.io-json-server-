@@ -1,4 +1,4 @@
-// Minimal starter: loads data/iceland.geojson and data/flows.csv from data/
+// Minimal starter: loads regions_100.geojson and data/flows.csv
 const map = L.map('map').setView([64.9, -19.0], 6);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(map);
 
@@ -11,7 +11,7 @@ const svg = d3.select('#map').select('svg');
 const g = svg.append('g').attr('class','flows');
 
 async function loadData(){
-  const regionsUrl = 'data/iceland.geojson';
+  const regionsUrl = 'regions_100.geojson'; // points to the file already in your repo root
   const flowsUrl = 'data/flows.csv';
   [regions, flows] = await Promise.all([
     d3.json(regionsUrl),
@@ -19,7 +19,7 @@ async function loadData(){
   ]);
 
   regions.features.forEach(f => {
-    // adjust this line if your geojson uses a different id property
+    // Make sure this matches a property in your geojson. We'll check later if needed.
     const id = f.properties.id || f.properties.ID || f.properties.GID || f.properties.region_id || f.properties.NAME || f.properties.name;
     if (id) centroids[id] = turf.centroid(f).geometry.coordinates; // [lng,lat]
     L.geoJSON(f, { style: { color:'#666', weight:1, fillOpacity:0.03 } }).addTo(map);
