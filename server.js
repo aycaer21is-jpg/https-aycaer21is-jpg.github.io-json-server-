@@ -7,26 +7,22 @@ const middlewares = jsonServer.defaults({
   static: 'public' // serve public/ for a simple front-end
 });
 
-// Logging + static files + CORS + bodyParser
 server.use(middlewares);
 server.use(jsonServer.bodyParser);
 
-// Allow CORS for browser clients (narrow this in production)
+// Allow CORS for browser clients
 server.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
-  res.header(
+  res. header(
     'Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept'
   );
-  res.header(
-    'Access-Control-Allow-Methods',
-    'GET, POST, PUT, PATCH, DELETE, OPTIONS'
-  );
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
   if (req.method === 'OPTIONS') return res.sendStatus(204);
   next();
 });
 
-// (Optional) Add a simple timestamp when creating items
+// Add a createdAt timestamp for new items
 server.use((req, res, next) => {
   if (req.method === 'POST') {
     req.body.createdAt = new Date().toISOString();
