@@ -1,4 +1,4 @@
-// Minimal starter: loads regions_100.geojson and data/flows.csv
+// Minimal starter: loads regions_100.geojson and data/flows.csv with clickable regions
 const map = L.map('map').setView([64.9, -19.0], 6);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(map);
 
@@ -11,18 +11,53 @@ const svg = d3.select('#map').select('svg');
 const g = svg.append('g').attr('class','flows');
 
 async function loadData(){
-  const regionsUrl = 'regions_100.geojson'; // points to the file already in your repo root
+  const regionsUrl = 'regions_100.geojson'; // points to the file in your repo root
   const flowsUrl = 'data/flows.csv';
   [regions, flows] = await Promise.all([
     d3.json(regionsUrl),
     d3.csv(flowsUrl, d => ({ origin_id: d.origin_id, dest_id: d.dest_id, type: d.type, year: d.year ? +d.year : null, unit: d.unit || 'persons', persons: d.persons ? +d.persons : 0 }))
   ]);
 
+  // add polygons with popups and click handlers
   regions.features.forEach(f => {
-    // Make sure this matches a property in your geojson. We'll check later if needed.
-    const id = f.properties.id || f.properties.ID || f.properties.GID || f.properties.region_id || f.properties.NAME || f.properties.name;
+    const props = f.properties || {};
+    const id = props.id || props.ID || props.GID || props.region_id || props.NAME || props.name;
     if (id) centroids[id] = turf.centroid(f).geometry.coordinates; // [lng,lat]
-    L.geoJSON(f, { style: { color:'#666', weight:1, fillOpacity:0.03 } }).addTo(map);
+
+    // style function so we can change on hover
+    const baseStyle = { color:'#666', weight:1, fillOpacity:0.03 };
+    const highlightStyle = { color:'#1e90ff', weight:2, fillOpacity:0.12 };
+
+    L.geoJSON(f, {
+      style: baseStyle,
+      onEachFeature: function(feature, layer){
+        const p = feature.properties || {};
+        const title = p.name || p.NAME || p.ID || p.GID || 'Region';
+        // bind a popup
+        layer.bindPopup(`<strong>${title}</strong>`);
+        // click zoom-to-feature and open popup
+        layer.on('click', function(e){
+          try {
+            if (layer.getBounds) map.fitBounds(layer.getBounds(), {padding:[20,20]});
+          } catch(e){}
+          layer.openPopup();
+        });
+        // hover highlight
+        layer.on('mouseover', function(){
+          if (layer.setStyle) layer.setStyle(highlightStyle);
+        });
+        layer.on('mouseout', function(){
+          if (layer.setStyle) layer.setStyle(baseStyle);
+        });
+        // make pointer cursor for polygons
+        layer.on('add', function(){
+          if (layer.getElement) {
+            const el = layer.getElement();
+            if (el) el.style.cursor = 'pointer';
+          }
+        });
+      }
+    }).addTo(map);
   });
 
   populateControls();
