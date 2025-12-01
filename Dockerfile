@@ -3,7 +3,9 @@ WORKDIR /app
 
 # copy package files first for improved build caching
 COPY package.json package-lock.json* ./
-RUN npm ci --only=production || npm install --production
+
+# Use npm install so build doesn't require a package-lock.json
+RUN npm install --production || npm install --production
 
 COPY . .
 
