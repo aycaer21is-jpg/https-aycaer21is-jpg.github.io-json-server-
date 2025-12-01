@@ -1,0 +1,7 @@
+{
+  "posts": [
+    { "id": 1, "title": "Hello world", "body": "This is a static post from db.json." },
+    { "id": 2, "title": "Another post", "body": "Fetchable via the API." }
+  ],
+  "profile": { "id": 1, "name": "aycaer21is-jpg", "bio": "Example profile" }
+}
