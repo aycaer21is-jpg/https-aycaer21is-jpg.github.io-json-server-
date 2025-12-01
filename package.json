@@ -1,7 +1,7 @@
 {
   "name": "json-server-example",
   "version": "1.0.0",
-  "description": "Simple json-server wrapper with CORS and static public folder",
+  "description": "json-server wrapper for Render deployment",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
