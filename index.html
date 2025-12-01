@@ -1,29 +1,36 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Moves by Type / Year — Iceland</title>
+  <title>Iceland Regions — Map</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body>
-  <header><h1>Moves by Type / Year — Iceland</h1></header>
+  <header>
+    <h1>Iceland Regions</h1>
+    <div class="subtitle">Interactive map of regions (is.json)</div>
+  </header>
   <main>
-    <aside id="controls">
-      <div><label>Year: <select id="yearSelect"><option value="">All</option></select></label></div>
-      <div><label>Type: <select id="typeSelect" multiple size="6"></select></label></div>
-      <div><label>Min persons: <input id="minPersons" type="number" value="0" min="0" /></label></div>
-      <div><button id="apply">Apply</button> <button id="reset">Reset</button></div>
-      <hr/>
-      <div id="legend"><strong>Legend</strong><div id="legendItems"></div></div>
+    <aside id="sidebar">
+      <div id="controls">
+        <input id="search" placeholder="Filter regions..." aria-label="Filter regions" />
+        <button id="zoomAll">Zoom to all</button>
+      </div>
+      <ul id="list"></ul>
     </aside>
     <section id="map"></section>
   </main>
+  <footer>Built with Leaflet • Drop a new is.json to replace the data</footer>
 
-  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <!-- Leaflet -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <!-- D3 (required by script.js) -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <!-- Turf (required by script.js) -->
   <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+  <!-- Your app script -->
   <script src="script.js"></script>
 </body>
 </html>
